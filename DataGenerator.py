@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-
 class DataGenerator(object):
     """
     This class opens a given file and reads the file line by line.
@@ -67,10 +66,7 @@ class DataGenerator(object):
 
     def change_columns_to_numeric(self, df):
         # change every column to floats or ints (only if possible)
-        for k in list(df):
-            df[[k]] = \
-                df[[k]].apply(pd.to_numeric, errors='ignore')
-        self.df_multiple_rows = df
+        self.df_multiple_rows = df.apply(pd.to_numeric, errors='ignore')
 
     def return_pd_or_np(self, dtype):
         # if dtype is 'pd' return everything as Pandas DataFrame
@@ -99,6 +95,7 @@ class DataGenerator(object):
         OUTPUT : pd.DataFrame OR
                 np.array of numeric data, np.array of strings
         """
+
         if readtype == 'batch':
             self.read_lines(lines)
             self.change_columns_to_numeric(self.df_multiple_rows)
@@ -124,16 +121,17 @@ class DataGenerator(object):
                 return self.return_pd_or_np(dtype)
 
 
-# example usage
-# file = "some_file_path.csv"
-# a = DataGenerator(file, deliminator=',')
-# print('Reading file incrementally. ------------------------------')
-# print(a.get_data(lines=3, dtype='df', readtype='incremental'))
-# print(a.get_data(lines=3, dtype='df', readtype='incremental'))
-# print(a.get_data(lines=3, dtype='df', readtype='incremental'))
-# print('Reading file as batch. ----------------------------------')
-# b = DataGenerator(file, deliminator=',')
-# print(b.get_data(lines=3, dtype='np', readtype='batch'))
-# print(b.get_data(lines=3, dtype='np', readtype='batch'))
-# print(b.get_data(lines=3, dtype='np', readtype='batch'))
-# print('---------------------------------------------------------')
+# # example usage
+if __name__== "__main__":
+    file = "EURUSD1440.csv"
+    a = DataGenerator(file, deliminator=',')
+    print('Reading file incrementally. ------------------------------')
+    print(a.get_data(lines=3, dtype='df', readtype='incremental'))
+    print(a.get_data(lines=3, dtype='df', readtype='incremental'))
+    print(a.get_data(lines=3, dtype='df', readtype='incremental'))
+    print('Reading file as batch. ----------------------------------')
+    b = DataGenerator(file, deliminator=',')
+    print(b.get_data(lines=3, dtype='np', readtype='batch'))
+    print(b.get_data(lines=3, dtype='np', readtype='batch'))
+    print(b.get_data(lines=3, dtype='np', readtype='batch'))
+    print('---------------------------------------------------------')
