@@ -30,39 +30,31 @@ class DataGenerator(object):
         OUTPUT : yield a single line as list of string (without '\n')
                 ['1971.01.04,00:00,0.53690,0.53690,0.53690,0.53690,1']
         """
-        for self.line in self.f:
-            if self.line[0] == self.deliminator:
-                yield EOFError
-            else:
-                self.line = self.line.splitlines()
-                self.line = self.line[0].split(self.deliminator)
-                self.line = pd.Series(self.line).apply(pd.to_numeric,errors='ignore').tolist()
-                yield self.line
+        line = self.f.readline().splitlines()  
+        if line == []:       
+            yield EOFError  
+        else: 
+            line = line[0].split(self.deliminator)  
+            line = pd.Series(line).apply(pd.to_numeric,errors = 'ignore').tolist()     
+            yield line
 
     def read_lines(self):
-                
-        line_as_list_of_strings = next(self.load_a_line)        
-       
-        if line_as_list_of_strings == EOFError:
-            print('end of file. move to first position')
-            self.f.seek(self.first_position)
-            self.tunnel.clear() 
-            line_as_list_of_strings = next(self.load_a_line)        
- 
-        elif len(self.tunnel) < self.maxlines:
-
-
-        else:
-            print('fill the tunnel')
-            self.tunnel.append(line_as_list_of_strings)     
-            
-
-        self.getDataCounter += 1
-        
-        return list(self.tunnel)
-
-
-
+            line_as_list_of_strings = next(self.load_a_line)       
+            if line_as_list_of_strings is EOFError:        
+                self.f.seek(self.first_position)     
+                self.tunnel.clear()   
+                self.read_lines()    
+            elif len(self.tunnel) < self.maxlines-1:     
+                self.tunnel.append(line_as_list_of_strings)      
+                self.read_lines()    
+            else: 
+                self.tunnel.append(line_as_list_of_strings)   
+                self.getDataCounter += 1     
+                print(self.tunnel)      
+                return list(self.tunnel)                     
+    
+    
+    
 # # example usage
 if __name__== "__main__":
     path = sys.argv[0].split(os.path.basename(__file__))[0]
