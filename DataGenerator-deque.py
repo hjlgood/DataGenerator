@@ -21,7 +21,10 @@ class DataGenerator(object):
         self.maxlines = maxlines
         self.getDataCounter = 0
         self.tunnel = deque(maxlen = maxlines)
-
+        
+    def close(self):
+        self.f.close()
+        
     @property
     def load_a_line(self):
         """
@@ -50,7 +53,6 @@ class DataGenerator(object):
             else: 
                 self.tunnel.append(line_as_list_of_strings)   
                 self.getDataCounter += 1     
-                print(self.tunnel)      
                 return list(self.tunnel)                     
     
     
@@ -65,5 +67,5 @@ if __name__== "__main__":
     print('Reading file incrementally. ------------------------------')
     for i in range(10):
         print(i, "th iteration")
-        a.read_lines()
+        print(a.read_lines())
     print('End of Main()---------------------------------------------')
